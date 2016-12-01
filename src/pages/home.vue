@@ -27,7 +27,12 @@
       return {
         msg: 'Welcome to Your Vue.js App11111'
       }
-    }
+    },
+    mounted () {},
+    methods: {},
+    computed: {},
+    filters: {},
+    watch: {}
   }
 </script>
 
