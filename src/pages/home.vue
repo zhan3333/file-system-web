@@ -10,7 +10,10 @@
     </el-row>
     <!--当前path-->
     <el-row>
-      <el-col><div v-text="nowPath"></div></el-col>
+      <el-button-group>
+        <el-button v-text="nowPath"></el-button>
+        <el-button @click="clickBack">返回</el-button>
+      </el-button-group>
     </el-row>
     <!--path下文件信息表格-->
     <el-row>
@@ -67,6 +70,22 @@
         let path = rowData.info.dirname
         let type = rowData.info.type
         if (type !== 'dir') return false
+        this.changePath(path, type)
+      },
+//      点击返回上一层
+      clickBack () {
+        let path = this.nowPath
+        let backPath = ''
+        let lastIndex = path.lastIndexOf('/')
+        if (lastIndex !== -1) {
+          backPath = path.substr(0, lastIndex)
+        }
+        console.info('backPath', backPath)
+        this.changePath(backPath)
+      },
+//      切换路径时执行操作
+      changePath (path, type = 'dir') {
+        if (type !== 'dir') return false
         console.info('to path: ', path)
         let promise = this.client.invoke(API_GET_FILE_INFO, [{data: {path: path}}])
         promise.then((data) => {
@@ -76,9 +95,6 @@
         }).catch((error) => {
           console.error('接口' + API_GET_FILE_INFO + '返回错误: ', error)
         })
-      },
-//      点击返回上一层
-      clickUp () {
       },
       // 处理传入接口的参数
       handleArgs () {
