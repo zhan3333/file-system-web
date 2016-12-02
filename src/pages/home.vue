@@ -33,7 +33,7 @@
   let Cookies = require('js-cookie')
   let hprose = require('../../node_modules/hprose-html5/dist/hprose-html5')
   const COOKIE_USE_SERVER = 'useServer'                     // cookie: 服务器地址
-  const API_GET_FILE_INFO = 'Test_testFileSystem'
+  const API_GET_FILE_INFO = 'FileSystem_getFileSystemList'
 //  const API_CREATE_DIR = 'File_createDir'
 //  const API_GET_RES_URL = 'File_getResUrl'
 //  const API_REMOVE_DIR = 'File_removeDir'
