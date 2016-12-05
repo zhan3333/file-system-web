@@ -16,6 +16,7 @@
       <el-col :span="12" style="display: flex; justify-content: flex-end;">
         <el-button @click="clickDeleteSelectionFile">删除选中文件</el-button>
         <el-button @click="clickCreateDir">创建文件夹</el-button>
+        <el-button @click="uploadFile">上传文件</el-button>
         <el-button @click="clickBack" :disabled="isRoot">返回</el-button>
       </el-col>
     </el-row>
@@ -44,7 +45,6 @@
   </div>
 
 </template>
-
 <script>
   let _ = require('lodash')
   let Cookies = require('js-cookie')
@@ -54,6 +54,7 @@
   const API_REMOVE = 'FileSystem_remove'  // 删除文件或文件夹
   const API_CREATE_DIR = 'FileSystem_createDir'
 //  const API_UPLOAD_FILE = 'File_uploadFile'
+
   export default {
     name: 'home',
     data () {
@@ -232,6 +233,13 @@
           })
         })
         this.changePath(this.nowPath)
+      },
+      uploadFile () {
+        // todo 上传文件到服务器操作
+        this.$message({
+          type: 'error',
+          message: '功能未实现'
+        })
       }
     },
     computed: {
