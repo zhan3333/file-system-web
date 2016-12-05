@@ -28,7 +28,7 @@
                   @selection-change="handleSelectionChange"
                   border>
           <el-table-column type="selection" width="50"></el-table-column>
-          <el-table-column prop="basename" label="文件名"></el-table-column>
+          <el-table-column prop="basename" label="文件名" sortable></el-table-column>
           <el-table-column prop="type" label="类型" sortable></el-table-column>
           <el-table-column prop="perms" label="权限" sortable></el-table-column>
           <el-table-column prop="fileSize" label="文件大小" sortable></el-table-column>
@@ -138,18 +138,29 @@
         let promise = client.invoke(API_GET_FILE_INFO)
         promise.then((data) => {
           console.log('File_getFileInfo: ', data)
-          this.$message({type: 'success', showClose: true, message: '连接服务器成功：' + useServer})
-          // 开始设置数据
-          this.client = client
-          this.serverUrl = useServer
-          this.nowPath = data.result.info.dirname + '/' + data.result.info.basename
-          this.dirname = data.result.info.basename
-          this.tableData = data.result.child
-          this.rootPath = data.result.info.rootPath
-          Cookies.set(COOKIE_USE_SERVER, useServer)  // 设置cookie
+          if (data.ret.code === 0) {
+            this.$message({type: 'success', showClose: true, message: '连接服务器成功：' + useServer})
+            // 开始设置数据
+            this.client = client
+            this.serverUrl = useServer
+            this.nowPath = data.result.info.dirname + '/' + data.result.info.basename
+            this.dirname = data.result.info.basename
+            this.tableData = data.result.child
+            this.rootPath = data.result.info.rootPath
+            Cookies.set(COOKIE_USE_SERVER, useServer)  // 设置cookie
+          } else {
+            this.$message({
+              type: 'error',
+              message: data.ret.msg
+            })
+          }
         }).catch((err) => {
           console.error(err)
-          this.$message({type: 'error', showClose: true, message: '操作未生效, 服务器地址异常，无法加载api信息, 地址为：' + this.serverUrl})
+          this.$message({
+            type: 'error',
+            showClose: true,
+            message: '操作未生效, 服务器地址异常，无法加载api信息, 地址为：' + this.serverUrl
+          })
         })
       },
       // 勾选文件时触发
@@ -234,6 +245,7 @@
         })
         this.changePath(this.nowPath)
       },
+      // 上传文件操作
       uploadFile () {
         // todo 上传文件到服务器操作
         this.$message({
