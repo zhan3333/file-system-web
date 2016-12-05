@@ -10,13 +10,24 @@
     </el-row>
     <!--当前path-->
     <el-row>
-      <el-col :span="12">
+      <el-col :span="12" style="margin: 10px 0">
         <el-button v-text="showPath"></el-button>
       </el-col>
       <el-col :span="12" style="display: flex; justify-content: flex-end;">
         <el-button @click="clickDeleteSelectionFile">删除选中文件</el-button>
         <el-button @click="clickCreateDir">创建文件夹</el-button>
-        <el-button @click="uploadFile">上传文件</el-button>
+        <el-popover ref="uploadFile" placement="top" v-model="showUpload">
+          <!--上传文件框-->
+          <el-upload
+            :data = "uploadData"
+            :action="uploadPath"
+            :default-file-list="fileList"
+            :on-success="handleUploadSuccess">
+            <el-button size="small" type="primary">点击选择文件上传</el-button>
+          </el-upload>
+        </el-popover>
+        <el-button v-popover:uploadFile>上传文件</el-button>
+
         <el-button @click="clickBack" :disabled="isRoot">返回</el-button>
       </el-col>
     </el-row>
@@ -56,7 +67,7 @@
   const API_GET_FILE_INFO = 'FileSystem_getFileSystemList'
   const API_REMOVE = 'FileSystem_remove'  // 删除文件或文件夹
   const API_CREATE_DIR = 'FileSystem_createDir'
-//  const API_UPLOAD_FILE = 'File_uploadFile'
+  const API_UPLOAD_FILE = 'FileSystem_uploadFile'
 
   export default {
     name: 'home',
@@ -70,7 +81,9 @@
         rootPath: '',         // 根目录
         // 表格数据
         tableData: [],
-        selectionChange: []   // 多选框勾选数据
+        selectionChange: [],   // 多选框勾选数据
+        showUpload: false,     // 显示上传页面
+        fileList: []           // 文件列表
       }
     },
     mounted () {
@@ -248,14 +261,16 @@
         })
         this.changePath(this.nowPath)
       },
-      // 上传文件操作
-      uploadFile () {
-        // todo 上传文件到服务器操作
+      // 上传文件成功后操作
+      handleUploadSuccess (response, file, fileList) {
         this.$message({
-          type: 'error',
-          message: '功能未实现'
+          type: 'success',
+          message: 'file:' + file.name + ' 上传成功~'
         })
+        // 刷新页面
+        this.changePath()
       },
+      // 处理时间格式
       showDate (val, onlyDate) {
         if (!val) return ''
         var dtVal
@@ -284,8 +299,19 @@
         let nowPath = this.nowPath
         return nowPath.replace(rootPath, 'root')
       },
+      // 判断是否为根目录
       isRoot: function () {
         return this.rootPath === this.nowPath
+      },
+      // 计算上传文件的目的服务器接口
+      uploadPath: function () {
+        return this.serverUrl + '/' + API_UPLOAD_FILE
+      },
+      // 计算上传文件时，传递的值
+      uploadData: function () {
+        return {
+          'toPath': this.nowPath
+        }
       }
     },
     filters: {
